@@ -23,28 +23,31 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsManagerService(){
-        String userName = "user2";
-        String password = "1234";
-
-        UserDetails user = User.builder()
-                .username(userName)
-                .password(passwordEncoder().encode(password))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsManagerService(){
+//        String userName = "user2";
+//        String password = "1234";
+//
+//        UserDetails user = User.builder()
+//                .username(userName)
+//                .password(passwordEncoder().encode(password))
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests((auth) -> {
             auth.requestMatchers("/sample/all").permitAll();
+            auth.requestMatchers("/sample/member").hasRole("USER");
         });
 
         httpSecurity.formLogin();
+        httpSecurity.csrf().disable();
+        httpSecurity.logout();
 
         return httpSecurity.build();
     }
